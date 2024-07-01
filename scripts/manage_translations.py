@@ -25,6 +25,7 @@ from subprocess import run
 import django
 from django.conf import settings
 from django.core.management import call_command
+from security import safe_command
 
 HAVE_JS = ["admin"]
 
@@ -77,8 +78,7 @@ def _check_diff(cat_name, base_path):
         "path": base_path,
         "ext": "js" if cat_name.endswith("-js") else "",
     }
-    p = run(
-        "git diff -U0 %s | egrep '^[-+]msgid' | wc -l" % po_path,
+    p = safe_command.run(run, "git diff -U0 %s | egrep '^[-+]msgid' | wc -l" % po_path,
         capture_output=True,
         shell=True,
     )
